@@ -1,9 +1,14 @@
 <form phx-change="update">
-    <input type="text" name="min" value="<%= @min %>"
-            placeholder="Start" autofocus="off" />
+    <input type="number" name="min" value="<%= @min %>"
+            placeholder="Start" autofocus="off" phx-debounce="500" />
 
- <input type="text" name="max" value="<%= @max %>"
-            placeholder="End" autofocus="off" />
+ <input type="number" name="max" value="<%= @max %>"
+            placeholder="End" autofocus="off" phx-debounce="500"/>
 
-    <%= @min %> - <%= @max %>
+    <span><%= @min %></span> : <span><%= @max %></span>
+    <div>
+        <%= for num <- @data do %>
+            <%= num %>, 
+        <% end %>
+    </div>
 </form>
