@@ -1,12 +1,14 @@
 defmodule AlgorithmWeb.SortLive do
   use AlgorithmWeb, :live_view
 
+  alias Algorithm.Sort
+
   def mount(_params, _session, socket) do
-    socket = assign(socket, data: [], min: "", max: "")
+    socket = assign(socket, data: [], min: "", max: "", algorithm: "")
     {:ok, socket}
   end
 
-  defp restart(params, socket) do
+  defp new_data(params, socket) do
     %{
       "min" => min,
       "max" => max
@@ -14,26 +16,27 @@ defmodule AlgorithmWeb.SortLive do
 
     data = generate_data_or_clear_data(min, max)
 
-    socket =
-      socket
-      |> put_communicate(data)
-      |> assign(
-        min: min,
-        max: max,
-        data: data
-      )
+    socket
+    |> new_data_communicate(data)
+    |> assign(
+      min: min,
+      max: max,
+      data: data
+    )
   end
 
-  defp put_communicate(socket, data) do
+  defp new_data_communicate(socket, data) do
     if length(data) > 0 do
-      socket
-      |> clear_flash()
-      |> put_flash(:info, "New data has been shufled")
+      put_communicate(socket, :info, "New data has been generated")
     else
-      socket
-      |> clear_flash()
-      |> put_flash(:error, "Fill min and Max to generate new data")
+      put_communicate(socket, :error, "Fill valid Min and Max to generate new data")
     end
+  end
+
+  defp put_communicate(socket, status, message) do
+    socket
+    |> clear_flash()
+    |> put_flash(status, message)
   end
 
   defp generate_data_or_clear_data(min, max) when min == "" or max == "", do: []
@@ -45,8 +48,29 @@ defmodule AlgorithmWeb.SortLive do
   end
 
   def handle_event("update", params, socket) do
-    socket = restart(params, socket)
-    IO.inspect(socket.assigns)
+    socket = new_data(params, socket)
     {:noreply, socket}
+  end
+
+  defp type_options do
+    Sort.allowed_algorithms()
+  end
+
+  def handle_event("sort", %{"algorithm" => algorithm}, socket) do
+    socket =
+      socket
+      |> clear_flash()
+      |> sort_communicate(algorithm)
+      |> assign(algorithm: algorithm)
+
+    {:noreply, socket}
+  end
+
+  defp sort_communicate(socket, algorithm) do
+    if algorithm != "" do
+      put_communicate(socket, :info, "Start shuffling ...")
+    else
+      put_communicate(socket, :error, "Choose algorithm")
+    end
   end
 end
