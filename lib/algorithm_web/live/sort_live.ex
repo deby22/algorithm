@@ -4,73 +4,27 @@ defmodule AlgorithmWeb.SortLive do
   alias Algorithm.Sort
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, data: [], min: "", max: "", algorithm: "")
+    socket = assign(socket, data: [], min: "", max: "", algorithm: "", loading: false)
     {:ok, socket}
   end
 
-  defp new_data(params, socket) do
-    %{
-      "min" => min,
-      "max" => max
-    } = params
-
-    data = generate_data_or_clear_data(min, max)
-
-    socket
-    |> new_data_communicate(data)
-    |> assign(
-      min: min,
-      max: max,
-      data: data
-    )
-  end
-
-  defp new_data_communicate(socket, data) do
-    if length(data) > 0 do
-      put_communicate(socket, :info, "New data has been generated")
-    else
-      put_communicate(socket, :error, "Fill valid Min and Max to generate new data")
-    end
-  end
-
-  defp put_communicate(socket, status, message) do
-    socket
-    |> clear_flash()
-    |> put_flash(status, message)
-  end
-
-  defp generate_data_or_clear_data(min, max) when min == "" or max == "", do: []
-
-  defp generate_data_or_clear_data(min, max) do
-    min = String.to_integer(min)
-    max = String.to_integer(max)
-    if min < max, do: Enum.shuffle(min..max), else: []
-  end
-
-  def handle_event("update", params, socket) do
-    socket = new_data(params, socket)
+  def handle_info({:start_sorting, algorithm, min, max}, socket) do
+    # socket = assign(socket, algorithm: algorithm, min: min, max: max)
+    # pid = self()
+    # Task.start(fn -> Sort.sort(pid, min, max, algorithm) end)
+    IO.inspect("xxxxxxx")
     {:noreply, socket}
   end
 
-  defp type_options do
-    Sort.allowed_algorithms()
-  end
-
-  def handle_event("sort", %{"algorithm" => algorithm}, socket) do
-    socket =
-      socket
-      |> clear_flash()
-      |> sort_communicate(algorithm)
-      |> assign(algorithm: algorithm)
-
+  def handle_info({:generate_new_data, min, max}, socket) do
+    # socket = assign(socket, data: Enum.shuffle(min..max), min: min, max: max)
+    socket = assign(socket, loading: true)
+    send(self(), {:do_generate_new_data, min, max})
     {:noreply, socket}
   end
 
-  defp sort_communicate(socket, algorithm) do
-    if algorithm != "" do
-      put_communicate(socket, :info, "Start shuffling ...")
-    else
-      put_communicate(socket, :error, "Choose algorithm")
-    end
+  def handle_info({:do_generate_new_data, min, max}, socket) do
+    socket = assign(socket, data: Enum.shuffle(min..max), min: min, max: max, loading: false)
+    {:noreply, socket}
   end
 end

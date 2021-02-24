@@ -89,3 +89,37 @@
   display: block;
   margin: -1rem 0 2rem;
 }
+
+
+
+.chart{
+  display:table;
+  table-layout: fixed;   
+  
+  width:60%;
+  max-width:700px;
+  height:200px;
+  margin:0 auto;
+  
+  background-image:linear-gradient(bottom, rgba(14, 11, 11, 0.1) 2%, transparent 2%);
+  background-size: 100% 50px;
+  background-position: left top;
+  
+  li{
+    position:relative;
+    display:table-cell;
+    vertical-align:bottom;
+    height:200px;
+  }
+  
+  span{
+    display: block;
+    background: rgba(#082d3f, .75);
+    animation: draw 1s ease-in-out;    
+  }
+  
+}
+
+@keyframes draw{
+  0%{height:0;} 
+}

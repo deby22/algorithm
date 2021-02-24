@@ -1,26 +1,20 @@
+    <h1>Build A Sandbox</h1>
 
-<form phx-change="update">
-    <input type="number" name="min" value="<%= @min %>"
-            placeholder="Start" autofocus="off" phx-debounce="500" />
+    <div id="sandbox">
+      <%= live_component @socket, AlgorithmWeb.SortFormComponent,
+                         id: 1,
+                         min: @min,
+                         max: @max,
+                         algorithm: @algorithm
+                         %>
 
- <input type="number" name="max" value="<%= @max %>"
-            placeholder="End" autofocus="off" phx-debounce="500"/>
+      <%= live_component @socket, AlgorithmWeb.SortPlotComponent,
+                         id: 1,
+                         data: @data,
+                         min: @min,
+                         max: @max,
+                         loading: @loading
+                         %>
 
-    <span><%= @min %></span> : <span><%= @max %></span>
-    <div>
-        <%= for num <- @data do %>
-            <%= num %>,
-        <% end %>
+
     </div>
-</form>
-
-
-<form phx-submit="sort">
-    <select name="algorithm">
-        <%= options_for_select(type_options(), @algorithm) %>
-    </select>
-
-    <button type="submit">
-        Sort
-    </button>
-</form>

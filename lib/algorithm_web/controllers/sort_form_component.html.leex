@@ -1,0 +1,26 @@
+
+<form phx-change="update">
+    <input type="number" name="min" value="<%= @min %>"
+            placeholder="Start" autofocus="off" phx-debounce="500" />
+
+ <input type="number" name="max" value="<%= @max %>"
+            placeholder="End" autofocus="off" phx-debounce="500"/>
+
+    <span><%= @min %></span> : <span><%= @max %></span>
+    <div>
+        <%= for num <- @data do %>
+            <%= num %>,
+        <% end %>
+    </div>
+</form>
+
+
+<form phx-submit="sort">
+    <select name="algorithm">
+        <%= options_for_select(type_options(), @algorithm) %>
+    </select>
+
+    <button type="submit">
+        Sort
+    </button>
+</form>
