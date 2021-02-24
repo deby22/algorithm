@@ -4,27 +4,24 @@ defmodule AlgorithmWeb.SortLive do
   alias Algorithm.Sort
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, data: [], min: "", max: "", algorithm: "", loading: false)
+    socket = assign(socket, data: [], min: "", max: "", algorithm: "")
     {:ok, socket}
   end
 
-  def handle_info({:start_sorting, algorithm, min, max}, socket) do
+  def handle_info({:start_sorting, algorithm, data}, socket) do
     # socket = assign(socket, algorithm: algorithm, min: min, max: max)
-    # pid = self()
-    # Task.start(fn -> Sort.sort(pid, min, max, algorithm) end)
-    IO.inspect("xxxxxxx")
+    pid = self()
+    Task.start(fn -> Sort.sort(pid, data, algorithm) end)
     {:noreply, socket}
   end
 
   def handle_info({:generate_new_data, min, max}, socket) do
-    # socket = assign(socket, data: Enum.shuffle(min..max), min: min, max: max)
-    socket = assign(socket, loading: true)
-    send(self(), {:do_generate_new_data, min, max})
+    socket = assign(socket, data: Enum.shuffle(min..max), min: min, max: max)
     {:noreply, socket}
   end
 
-  def handle_info({:do_generate_new_data, min, max}, socket) do
-    socket = assign(socket, data: Enum.shuffle(min..max), min: min, max: max, loading: false)
+  def handle_info({:update_data, data}, socket) do
+    socket = assign(socket, data: data)
     {:noreply, socket}
   end
 end

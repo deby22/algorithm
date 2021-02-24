@@ -5,15 +5,15 @@
                          id: 1,
                          min: @min,
                          max: @max,
-                         algorithm: @algorithm
+                         algorithm: @algorithm,
+                         data: @data
                          %>
 
       <%= live_component @socket, AlgorithmWeb.SortPlotComponent,
-                         id: 1,
+                         id: 2,
                          data: @data,
                          min: @min,
-                         max: @max,
-                         loading: @loading
+                         max: @max
                          %>
 
 

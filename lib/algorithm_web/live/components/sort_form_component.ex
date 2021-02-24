@@ -3,7 +3,7 @@ defmodule AlgorithmWeb.SortFormComponent do
   alias Algorithm.Sort
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, min: "", max: "", algorithm: "")
+    socket = assign(socket, min: "", max: "", algorithm: "", data: [])
     {:ok, socket}
   end
 
@@ -20,9 +20,6 @@ defmodule AlgorithmWeb.SortFormComponent do
 
       <input type="number" name="max" value="<%= @max %>"
                   placeholder="End" autofocus="off" phx-debounce="500"/>
-
-          <span><%= @min %></span> : <span><%= @max %></span>
-
         <select name="algorithm">
             <%= options_for_select(type_options(), @algorithm) %>
         </select>
@@ -37,9 +34,9 @@ defmodule AlgorithmWeb.SortFormComponent do
     Sort.allowed_algorithms()
   end
 
-  def handle_event("sort", %{"algorithm" => algorithm, "min" => min, "max" => max}, socket) do
+  def handle_event("sort", %{"algorithm" => algorithm}, socket) do
     # send information do parent -  AlgorithmWeb.SortLive
-    send(self(), {:start_sorting, algorithm, min, max})
+    send(self(), {:start_sorting, algorithm, socket.assigns.data})
     {:noreply, socket}
   end
 

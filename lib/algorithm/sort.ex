@@ -1,12 +1,13 @@
 defmodule Algorithm.Sort do
   alias Algorithm.Sort.RandomSort
 
-  def sort(pid, min, max, algorithm) do
+  def sort(pid, data, algorithm) do
     IO.inspect(algorithm, label: "algorithmalgorithmalgorithmalgorithm")
-    # case algorithm do
-    #   "random" -> RandomSort.sort(data)
-    #   _ -> data
-    # end
+
+    case algorithm do
+      "random" -> RandomSort.sort(pid, data)
+      _ -> data
+    end
   end
 
   def allowed_algorithms() do

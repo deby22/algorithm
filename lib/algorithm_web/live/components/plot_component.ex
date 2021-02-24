@@ -10,12 +10,6 @@ defmodule AlgorithmWeb.SortPlotComponent do
     ~L"""
     <div class="plot">
 
-      <%= if @loading do %>
-       <div class="loader">
-         Loading...
-       </div>
-       <% else %>
-
     <ul class="chart">
     <%= for num <- @data do %>
       <li>
@@ -23,7 +17,6 @@ defmodule AlgorithmWeb.SortPlotComponent do
       </li>
       <% end %>
     </ul>
-    <% end %>
 
     </div>
     """
@@ -31,6 +24,6 @@ defmodule AlgorithmWeb.SortPlotComponent do
 
   defp height(value, min, max) do
     range = max - min
-    div((max - value) * 100, range)
+    div((max + 1 - value) * 100, range)
   end
 end
