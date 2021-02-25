@@ -2,40 +2,31 @@ defmodule Algorithm.Sort.BubbleSort do
   # :timer.sleep(1)
   # send(pid, {:update_data, data, true})
   # send(pid, {:update_data, data, false})
-  def sort(pid, list) when is_list(list) do
-    make_pass(do_sort(list, []), list, pid)
+  def sort([], pid), do: []
+  def sort(list, pid) do
+    sort(list, [], true, pid)
+  end
+  def sort([a, b | list] = data, acc, _, pid) when a > b do
+    send_with_delay(pid, Enum.reverse(data) ++ acc, false)
+    sort([a | list], [b | acc], false, pid)
   end
 
-  def make_pass(bubbled_list, old_list, pid) when bubbled_list != old_list do
-    :timer.sleep(10)
-    send(pid, {:update_data, bubbled_list, false})
-    do_sort(bubbled_list, []) |> make_pass(bubbled_list, pid)
+  def sort([a, b | list] = data, acc, done, pid) do
+    send_with_delay(pid,  Enum.reverse(data) ++ acc, false)
+    sort([b | list], [a | acc], done, pid)
+  end
+  def sort([a], acc, true, pid) do
+    send_with_delay(pid, [a | acc], true)
+    [a | acc] |> Enum.reverse
+  end
+  def sort([a], acc, false, pid) do
+    [a | acc] |> Enum.reverse |> sort(pid)
   end
 
-  def make_pass(bubbled_list, old_list, pid) when bubbled_list == old_list do
-    :timer.sleep(10)
-    send(pid, {:update_data, bubbled_list, true})
-    bubbled_list
+  defp send_with_delay(pid, data, sorted) do
+    :timer.sleep(1)
+    send(pid, {:update_data, data, sorted})
   end
 
-  def do_sort(_list = [], _acc) do
-    []
-  end
 
-  def do_sort([first | []], acc) do
-    acc ++ [first]
-  end
-
-  def do_sort([first | [second | tail]], acc) do
-    [new_first, new_second] = swap(first, second)
-    do_sort([new_second | tail], acc ++ [new_first])
-  end
-
-  defp swap(e1, e2) do
-    if e1 <= e2 do
-      [e1, e2]
-    else
-      [e2, e1]
-    end
-  end
 end
