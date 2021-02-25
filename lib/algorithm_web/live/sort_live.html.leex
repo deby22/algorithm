@@ -12,6 +12,7 @@
       <%= live_component @socket, AlgorithmWeb.SortPlotComponent,
                          id: 2,
                          data: @data,
+                         old_data: @old_data,
                          min: @min,
                          max: @max
                          %>

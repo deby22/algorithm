@@ -6,14 +6,20 @@ defmodule AlgorithmWeb.SortPlotComponent do
     {:ok, socket}
   end
 
+  def update(assigns, socket) do
+    IO.inspect({"update", self()})
+    socket = assign(socket, assigns)
+    {:ok, socket}
+  end
+
   def render(assigns) do
     ~L"""
     <div class="plot">
 
     <ul class="chart">
-    <%= for num <- @data do %>
+    <%= for {old, num} <- Enum.zip(@old_data, @data) do %>
       <li>
-        <span style="height:<%= height(num, @min, @max) %>%"></span>
+        <span style="<%= if old != num, do: 'background-color:red;' %> height:<%= height(num, @min, @max) %>%"></span>
       </li>
       <% end %>
     </ul>

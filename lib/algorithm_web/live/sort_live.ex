@@ -4,7 +4,11 @@ defmodule AlgorithmWeb.SortLive do
   alias Algorithm.Sort
 
   def mount(_params, _session, socket) do
-    socket = assign(socket, data: [], min: "", max: "", algorithm: "", sort_pid: nil)
+    IO.inspect(self(), label: "sort")
+
+    socket =
+      assign(socket, data: [], old_data: [], min: "", max: "", algorithm: "", sort_pid: nil)
+
     {:ok, socket}
   end
 
@@ -17,20 +21,26 @@ defmodule AlgorithmWeb.SortLive do
 
   def handle_info(:stop_sorting, socket) do
     # socket = assign(socket, algorithm: algorithm, min: min, max: max)
+    IO.inspect("stop!!!!!!!!!!")
     {:noreply, stop_sorting(socket)}
   end
 
   def handle_info({:generate_new_data, min, max}, socket) do
+    data = Enum.shuffle(min..max)
+
     socket =
       socket
-      |> assign(data: Enum.shuffle(min..max), min: min, max: max)
+      |> assign(data: data, old_data: data, min: min, max: max)
       |> stop_sorting()
 
     {:noreply, socket}
   end
 
   def handle_info({:update_data, data, sorted}, socket) do
-    socket = assign(socket, data: data)
+    IO.inspect(self(), label: "sort info")
+
+    old_data = socket.assigns.data
+    socket = assign(socket, old_data: old_data, data: data)
 
     if sorted do
       {:noreply, stop_sorting(socket)}
