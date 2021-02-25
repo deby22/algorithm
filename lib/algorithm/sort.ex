@@ -1,11 +1,11 @@
 defmodule Algorithm.Sort do
   alias Algorithm.Sort.RandomSort
+  alias Algorithm.Sort.BubbleSort
 
   def sort(pid, data, algorithm) do
-    IO.inspect(algorithm, label: "algorithmalgorithmalgorithmalgorithm")
-
     case algorithm do
       "random" -> RandomSort.sort(pid, data)
+      "bubble" -> BubbleSort.sort(pid, data)
       _ -> data
     end
   end
@@ -13,8 +13,8 @@ defmodule Algorithm.Sort do
   def allowed_algorithms() do
     [
       ---: "",
-      "Random 2": "random",
-      "Random 3": "random"
+      Random: "random",
+      Bubble: "bubble"
     ]
   end
 end

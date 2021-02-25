@@ -14,19 +14,32 @@ defmodule AlgorithmWeb.SortFormComponent do
   def render(assigns) do
     ~L"""
 
-    <form phx-change="update" phx-target="<%= @myself %>"  phx-submit="sort">
+    <form phx-target="<%= @myself %>"  phx-submit="new_data">
       <input type="number" name="min" value="<%= @min %>"
               placeholder="Start" autofocus="off" phx-debounce="500" />
 
       <input type="number" name="max" value="<%= @max %>"
                   placeholder="End" autofocus="off" phx-debounce="500"/>
-        <select name="algorithm">
-            <%= options_for_select(type_options(), @algorithm) %>
-        </select>
-        <button type="submit">
-            Sort
+      <button type="submit">
+            New data
         </button>
+
     </form>
+    <form phx-target="<%= @myself %>"  phx-submit="sort">
+      <select name="algorithm">
+        <%= options_for_select(type_options(), @algorithm) %>
+      </select>
+      <button type="submit">
+        Start sorting
+      </button>
+          </form>
+
+      <button phx-target="<%= @myself %>" phx-click="stop">
+        Stop
+      </button>
+
+
+
     """
   end
 
@@ -40,9 +53,14 @@ defmodule AlgorithmWeb.SortFormComponent do
     {:noreply, socket}
   end
 
-  def handle_event("update", %{"min" => min, "max" => max}, socket) do
+  def handle_event("new_data", %{"min" => min, "max" => max}, socket) do
     # send information do parent -  AlgorithmWeb.SortLive
     generate_new_data(min, max)
+    {:noreply, socket}
+  end
+
+  def handle_event("stop", _params, socket) do
+    send(self(), :stop_sorting)
     {:noreply, socket}
   end
 

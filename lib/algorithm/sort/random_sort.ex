@@ -1,6 +1,7 @@
 defmodule Algorithm.Sort.RandomSort do
   def sort(pid, data) do
     data = Enum.shuffle(data)
+    :timer.sleep(1)
 
     if data == Enum.sort(data) do
       send(pid, {:update_data, data, true})

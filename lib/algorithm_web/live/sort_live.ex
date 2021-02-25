@@ -15,9 +15,12 @@ defmodule AlgorithmWeb.SortLive do
     {:noreply, assign(socket, sort_pid: sort_pid)}
   end
 
-  def handle_info({:generate_new_data, min, max}, socket) do
-    IO.inspect("new data")
+  def handle_info(:stop_sorting, socket) do
+    # socket = assign(socket, algorithm: algorithm, min: min, max: max)
+    {:noreply, stop_sorting(socket)}
+  end
 
+  def handle_info({:generate_new_data, min, max}, socket) do
     socket =
       socket
       |> assign(data: Enum.shuffle(min..max), min: min, max: max)
@@ -39,8 +42,10 @@ defmodule AlgorithmWeb.SortLive do
   def stop_sorting(socket) do
     pid = socket.assigns.sort_pid
 
+    IO.inspect({"stop", pid})
+
     if pid do
-      Process.exit(pid, :normal)
+      Process.exit(pid, :kill)
     end
 
     assign(socket, sort_pid: nil)
