@@ -30,6 +30,6 @@ defmodule AlgorithmWeb.SortPlotComponent do
 
   defp height(value, min, max) do
     range = max - min
-    div((max + 1 - value) * 100, range)
+    div((value - min) * 100, range)
   end
 end
